@@ -1,0 +1,99 @@
+body {
+  margin: 0;
+  background: black;
+  font-family: 'Courier New', Consolas, monospace;
+  color: #00ff00;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.terminal {
+  width: 800px;
+  height: 500px;
+  background: #000;
+  border: 2px solid #00ff00;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+.header {
+  padding: 10px;
+  border-bottom: 2px solid #00ff00;
+  color: #00ff00;
+  text-align: center;
+  background: linear-gradient(90deg, #000, #111, #000);
+  font-weight: bold;
+}
+
+#output {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.line {
+  margin: 2px 0;
+  white-space: pre-wrap;
+}
+
+.input-line {
+  display: flex;
+  border-top: 2px solid #00ff00;
+  padding: 10px;
+  background: #111;
+}
+
+.prompt {
+  margin-right: 5px;
+  color: #00ff00;
+  font-weight: bold;
+}
+
+#input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #00ff00;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  caret-color: #00ff00;
+}
+
+#input::placeholder {
+  color: #008800;
+}
+
+/* Blinking cursor effect */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.terminal::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 10px;
+  height: 10px;
+  background: #00ff00;
+  border-radius: 50%;
+  animation: blink 1s infinite;
+}
+
+input {
+  flex: 1;
+  background: black;
+  border: none;
+  outline: none;
+  color: #00ff00;
+  font-family: Consolas, monospace;
+  font-size: 14px;
+}
