@@ -1,56 +1,68 @@
-const socket = new WebSocket(`ws://${window.location.host}`);
+﻿const socket = new WebSocket(`ws://${window.location.host}`);
 
 const output = document.getElementById('output');
 const input = document.getElementById('input');
+const status = document.getElementById('status');
+const sendBtn = document.getElementById('sendBtn');
 
-// Print line to terminal
-function print(text) {
+function setStatus(text, state) {
+  status.textContent = text;
+  status.className = `terminal__status terminal__status--${state}`;
+}
+
+function print(text, type = 'server') {
   const div = document.createElement('div');
-  div.className = 'line';
+  div.className = `line line--${type}`;
   div.textContent = text;
   output.appendChild(div);
   output.scrollTop = output.scrollHeight;
 }
 
-// Connection opened
+function sendCommand() {
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  if (socket.readyState !== WebSocket.OPEN) {
+    print('[ERROR] Unable to send command. Socket is not open.', 'error');
+    return;
+  }
+
+  print(`C:\\user> ${msg}`, 'user');
+  socket.send(msg);
+  input.value = '';
+}
+
 socket.addEventListener('open', () => {
-  print("[SYSTEM] Connected to server ✔");
+  setStatus('Online', 'online');
+  print('[SYSTEM] Connected to server ✔', 'system');
 });
 
-// Receive message
 socket.addEventListener('message', (event) => {
   try {
     const data = JSON.parse(event.data);
-    print(`[SERVER] ${data.message} (from ${data.sender})`);
+    const sender = data.sender || 'server';
+    print(`[${sender.toUpperCase()}] ${data.message}`, 'server');
   } catch (e) {
-    print("[SERVER] " + event.data);
+    print(`[SERVER] ${event.data}`, 'server');
   }
 });
 
-// Connection closed
 socket.addEventListener('close', () => {
-  print("[SYSTEM] Disconnected ❌");
+  setStatus('Offline', 'offline');
+  print('[SYSTEM] Disconnected ❌', 'system');
 });
 
-// Error
 socket.addEventListener('error', () => {
-  print("[SYSTEM] Error occurred ⚠");
+  setStatus('Offline', 'offline');
+  print('[SYSTEM] Error occurred ⚠', 'error');
 });
 
-// Send message on Enter
-input.addEventListener('keydown', (e) => {
-  if (e.key === "Enter") {
-    const msg = input.value.trim();
-    if (!msg) return;
-
-    print("C:\\user> " + msg);
-    
-    try {
-      socket.send(msg);
-    } catch (error) {
-      print("[ERROR] " + error.message);
-    }
-
-    input.value = "";
+input.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    sendCommand();
   }
 });
+
+sendBtn.addEventListener('click', sendCommand);
+input.focus();

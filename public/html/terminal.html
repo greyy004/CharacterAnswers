@@ -1,28 +1,39 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CMD WebSocket Terminal</title>
-  <link rel="stylesheet" href="/css/terminal.css">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Character Answers Terminal</title>
+  <link rel="stylesheet" href="/css/terminal.css" />
 </head>
 <body>
+  <div class="app-shell">
+    <main class="terminal">
+      <header class="terminal__header">
+        <div>
+          <p class="terminal__eyebrow">Character Answers</p>
+          <h1>WebSocket Command Terminal</h1>
+          <p class="terminal__subtitle">Send commands to the server and view responses in real time.</p>
+        </div>
+        <div class="terminal__status" id="status">Connecting...</div>
+      </header>
 
-  <div class="terminal">
-    <div class="header">
-      WebSocket CMD Terminal v1.0
-    </div>
+      <section class="terminal__content">
+        <div class="output" id="output"></div>
 
-    <div id="output"></div>
+        <div class="input-panel">
+          <span class="prompt">C:\\user&gt;</span>
+          <input id="input" type="text" placeholder="Enter a command and press Enter" autocomplete="off" />
+          <button id="sendBtn" type="button">Send</button>
+        </div>
+      </section>
 
-    <div class="input-line">
-      <span class="prompt">C:\\user&gt;</span>
-      <input type="text" id="input" autofocus />
-    </div>
+      <footer class="terminal__footer">
+        <span>Ctrl+Enter or click Send to execute. Socket status updates automatically.</span>
+      </footer>
+    </main>
   </div>
 
   <script src="/js/terminal.js"></script>
-
 </body>
 </html>

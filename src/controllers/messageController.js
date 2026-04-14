@@ -24,3 +24,14 @@ export const handleMessage = async ({ message, sender }) => {
     };
   }
 };
+
+export const handleCommand = async (request, response ) => {
+  try{
+    const {commmand} = request.body.param;
+    
+
+  }catch(Error)
+  {
+
+  }
+};
