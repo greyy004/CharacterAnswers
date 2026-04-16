@@ -1,26 +1,14 @@
-import crypto from 'crypto';
+import { customAlphabet } from 'nanoid';
 
 const rooms = new Map();
-const ROOM_CODE_LENGTH = 6;
-const ROOM_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
-function generateRoomCode(length = ROOM_CODE_LENGTH) {
-  let code = '';
+const generateRoomCode = customAlphabet(
+  'ABCDEFGHJKLMNPQRSTUVWXYZ23456789',
+  6
+);
 
-  while (code.length < length) {
-    const randomBytes = crypto.randomBytes(length);
+const code = generateRoomCode();
 
-    for (const byte of randomBytes) {
-      code += ROOM_CODE_ALPHABET[byte % ROOM_CODE_ALPHABET.length];
-
-      if (code.length === length) {
-        break;
-      }
-    }
-  }
-
-  return code;
-}
 
 export function createRoom() {
   let code = generateRoomCode();
