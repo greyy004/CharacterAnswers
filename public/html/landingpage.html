@@ -27,12 +27,11 @@
         <div class="actions-grid">
           <section class="action-panel">
             <p class="panel-label">Create Room</p>
-            <h2>Generate a new code.</h2>
-            <p class="panel-copy">Use this when you want a fresh session to share or save.</p>
+            <h2>Create a fresh session.</h2>
+            <p class="panel-copy">A unique room code is created automatically and you are taken straight into the terminal.</p>
 
-            <div class="inline-row">
-              <input type="text" id="code" name="code" readonly placeholder="room code will appear here">
-              <button id="generate_code" type="button">Generate</button>
+            <div class="cta-row">
+              <button id="create_room" type="button">Create Room</button>
             </div>
           </section>
 
@@ -41,10 +40,10 @@
             <h2>Use an existing code.</h2>
             <p class="panel-copy">Paste a room code here to pick up an existing conversation.</p>
 
-            <div class="inline-row">
+            <form id="join_room_form" class="inline-row">
               <input type="text" id="join_room" name="join_room" placeholder="enter room code">
-              <a class="ghost-link" href="/">Open terminal</a>
-            </div>
+              <button class="ghost-link" type="submit">Open terminal</button>
+            </form>
           </section>
         </div>
       </div>

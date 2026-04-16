@@ -1,39 +1,52 @@
-const generateBtn = document.getElementById('generate_code');
-const codeInput = document.getElementById('code');
+const createRoomBtn = document.getElementById('create_room');
+const joinForm = document.getElementById('join_room_form');
 const joinInput = document.getElementById('join_room');
 
-async function generateCode() {
-  if (!generateBtn || !codeInput) return;
+async function createRoom() {
+  if (!createRoomBtn) return;
 
-  generateBtn.disabled = true;
-  generateBtn.textContent = 'Generating';
+  createRoomBtn.disabled = true;
+  createRoomBtn.textContent = 'Creating room';
 
   try {
-    const response = await fetch('/code/generate');
+    const response = await fetch('/code/create-room', {
+      method: 'POST'
+    });
+
     const payload = await response.json();
-    const roomCode = payload?.data?.code ?? '';
+    const redirectUrl = payload?.data?.redirectUrl;
 
-    codeInput.value = roomCode;
-
-    if (roomCode) {
-      codeInput.focus();
-      codeInput.select();
+    if (response.ok && redirectUrl) {
+      window.location.assign(redirectUrl);
+      return;
     }
+
+    throw new Error('Room creation failed');
   } catch (error) {
-    console.error('Error generating code:', error);
-    codeInput.value = 'unable to generate code';
-  } finally {
-    generateBtn.disabled = false;
-    generateBtn.textContent = 'Generate';
+    console.error('Error creating room:', error);
+    createRoomBtn.disabled = false;
+    createRoomBtn.textContent = 'Try again';
   }
 }
 
-if (generateBtn) {
-  generateBtn.addEventListener('click', generateCode);
+if (createRoomBtn) {
+  createRoomBtn.addEventListener('click', createRoom);
 }
 
 if (joinInput) {
   joinInput.addEventListener('input', () => {
-    joinInput.value = joinInput.value.toUpperCase();
+    joinInput.value = joinInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
   });
 }
+
+if (joinForm && joinInput) {
+  joinForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const roomCode = joinInput.value.trim().toUpperCase();
+    if (!roomCode) return;
+
+    window.location.assign(`/room/${roomCode}`);
+  });
+}
+

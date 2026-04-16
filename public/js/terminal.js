@@ -4,6 +4,7 @@ const output = document.getElementById('output');
 const input = document.getElementById('input');
 const status = document.getElementById('status');
 const sendBtn = document.getElementById('sendBtn');
+const roomCode = window.location.pathname.split('/').filter(Boolean).at(-1)?.toUpperCase() || '';
 
 function setStatus(text, state) {
   if (!status) return;
@@ -36,6 +37,7 @@ function sendCommand() {
 socket.on('connect', () => {
   setStatus('online', 'online');
   print('Connected to server', 'system');
+  socket.emit('room:join', { roomCode });
 });
 
 socket.on('chat:message', (data) => {
@@ -43,10 +45,15 @@ socket.on('chat:message', (data) => {
     print(data, 'server');
     return;
   }
-
   const sender = data?.sender || 'server';
   const message = data?.message || '';
   print(`${sender}: ${message}`, sender === 'system' ? 'system' : 'server');
+});
+
+socket.on('room:joined', () => {});
+
+socket.on('room:error', (data) => {
+  print(data?.message || 'Room error', 'error');
 });
 
 socket.on('disconnect', () => {
@@ -68,3 +75,4 @@ input.addEventListener('keydown', (event) => {
 
 sendBtn.addEventListener('click', sendCommand);
 input.focus();
+

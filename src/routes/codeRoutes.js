@@ -1,7 +1,7 @@
 import express from 'express';
-import {generateCode} from '../controllers/codeController.js';
+import { createRoomCode } from '../controllers/codeController.js';
 const router = express.Router();
 
-router.get('/generate', generateCode);
+router.post('/create-room', createRoomCode);
 
 export default router;

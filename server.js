@@ -1,6 +1,7 @@
 import express from 'express';
 import http from 'http';
 import codeRoutes from './src/routes/codeRoutes.js';
+import { validateRoom } from './src/controllers/codeController.js';
 import initWebSocket from './src/websocket/socket.js';
 
 import * as dotenv from 'dotenv';
@@ -15,6 +16,10 @@ app.use(express.static('public'));
 // routes
 app.get('/', (req, res) => {
   res.sendFile('public/html/landingpage.html', { root: '.' });
+});
+
+app.get('/room/:roomCode', validateRoom, (req, res) => {
+  res.sendFile('public/html/terminal.html', { root: '.' });
 });
 
 app.use('/code', codeRoutes);
