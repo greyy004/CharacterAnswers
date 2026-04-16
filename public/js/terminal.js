@@ -7,7 +7,7 @@ const sendBtn = document.getElementById('sendBtn');
 
 function setStatus(text, state) {
   status.textContent = text;
-  status.className = `terminal__status terminal__status--${state}`;
+  status.className = `status status--${state}`;
 }
 
 function print(text, type = 'server') {
@@ -27,7 +27,7 @@ function sendCommand() {
     return;
   }
 
-  print(`C:\\user> ${msg}`, 'user');
+  print(`> ${msg}`, 'user');
   socket.send(msg);
   input.value = '';
 }
@@ -49,7 +49,7 @@ socket.addEventListener('message', (event) => {
 
 socket.addEventListener('close', () => {
   setStatus('Offline', 'offline');
-  print('[SYSTEM] Disconnected ❌', 'system');
+  print('[SYSTEM] Disconnected ❌', 'error');
 });
 
 socket.addEventListener('error', () => {

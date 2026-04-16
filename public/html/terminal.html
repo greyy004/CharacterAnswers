@@ -3,34 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Character Answers Terminal</title>
+  <title>Character Answers Console</title>
   <link rel="stylesheet" href="/css/terminal.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <main class="terminal">
-      <header class="terminal__header">
-        <div>
-          <p class="terminal__eyebrow">Character Answers</p>
-          <h1>WebSocket Command Terminal</h1>
-          <p class="terminal__subtitle">Send commands to the server and view responses in real time.</p>
-        </div>
-        <div class="terminal__status" id="status">Connecting...</div>
-      </header>
+  <div class="terminal-shell">
+    <header class="terminal-header">
+      <div>
+        <p class="terminal-label">Character Answers</p>
+        <h1>Command console</h1>
+        <p class="terminal-subtitle">Send commands and view live responses in a simple workspace.</p>
+      </div>
+      <div id="status" class="status status--pending">Connecting...</div>
+    </header>
 
-      <section class="terminal__content">
-        <div class="output" id="output"></div>
-
-        <div class="input-panel">
-          <span class="prompt">C:\\user&gt;</span>
-          <input id="input" type="text" placeholder="Enter a command and press Enter" autocomplete="off" />
-          <button id="sendBtn" type="button">Send</button>
-        </div>
-      </section>
-
-      <footer class="terminal__footer">
-        <span>Ctrl+Enter or click Send to execute. Socket status updates automatically.</span>
-      </footer>
+    <main class="terminal-main">
+      <div id="output" class="output"></div>
+      <form class="terminal-form" onsubmit="return false;">
+        <span class="prompt">></span>
+        <input id="input" type="text" placeholder="Type a command" autocomplete="off" />
+        <button id="sendBtn" type="button">Send</button>
+      </form>
     </main>
   </div>
 
