@@ -30,5 +30,4 @@ initWebSocket(server);
 const port = process.env.WS_PORT || 5000;
 server.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
-  console.log(`Socket.IO running on http://localhost:${port}`);
 }); 

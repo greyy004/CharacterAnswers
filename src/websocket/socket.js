@@ -28,6 +28,11 @@ function initWebSocket(server) {
         return;
       }
 
+      io.to(socket.data.roomCode).emit('chat:message', {
+        sender: socket.id,
+        message
+      });
+
       const result = await handleMessage({
         message,
         sender: 'chat-bot'
