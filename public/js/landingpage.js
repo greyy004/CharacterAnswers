@@ -6,10 +6,10 @@ async function createRoom() {
   if (!createRoomBtn) return;
 
   createRoomBtn.disabled = true;
-  createRoomBtn.textContent = 'Creating room';
+    createRoomBtn.textContent = 'Creating room';
 
   try {
-    const response = await fetch('/code/create-room', {
+    const response = await fetch('/rooms/create-room', {
       method: 'POST'
     });
 
@@ -49,4 +49,3 @@ if (joinForm && joinInput) {
     window.location.assign(`/room/${roomCode}`);
   });
 }
-

@@ -71,12 +71,12 @@ body {
 }
 
 .terminal-kicker {
+  margin-bottom: 6px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 6px;
 }
 
 .terminal-heading h1 {
@@ -84,41 +84,6 @@ body {
   line-height: 1.15;
   font-weight: 600;
   letter-spacing: -0.02em;
-}
-
-.status {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: #ffffff;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  text-transform: lowercase;
-}
-
-.status::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #d0d7de;
-}
-
-.status--online {
-  color: var(--muted);
-}
-
-.status--offline {
-  color: var(--muted);
-}
-
-.status--offline::before {
-  background: #d0d7de;
 }
 
 .output {
@@ -144,6 +109,10 @@ body {
   color: #5c6f91;
 }
 
+.line--user-peer {
+  color: #7a4b32;
+}
+
 .line--server {
   color: var(--text);
 }
@@ -154,10 +123,6 @@ body {
 
 .line--error {
   color: var(--red);
-}
-
-.line--sender {
-  color: var(--blue);
 }
 
 .terminal-form {
@@ -242,10 +207,6 @@ body {
   .terminal-header {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .status {
-    align-self: flex-start;
   }
 
   .terminal-form {
