@@ -19,11 +19,11 @@ app.get('/', (req, res) => {
 
 app.use('/code', codeRoutes);
 
-// websocket
+// socket.io
 initWebSocket(server);
 
 const port = process.env.WS_PORT || 5000;
 server.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
-  console.log(`WebSocket running on ws://localhost:${port}`);
+  console.log(`Socket.IO running on http://localhost:${port}`);
 }); 

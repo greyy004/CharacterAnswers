@@ -1,4 +1,4 @@
-﻿const socket = new WebSocket(`ws://${window.location.host}`);
+const socket = io();
 
 const output = document.getElementById('output');
 const input = document.getElementById('input');
@@ -23,37 +23,38 @@ function sendCommand() {
   const msg = input.value.trim();
   if (!msg) return;
 
-  if (socket.readyState !== WebSocket.OPEN) {
-    print('Unable to send command. Socket is not open.', 'error');
+  if (!socket.connected) {
+    print('Unable to send command. Socket is not connected.', 'error');
     return;
   }
 
   print(`$ ${msg}`, 'user');
-  socket.send(msg);
+  socket.emit('chat:message', msg);
   input.value = '';
 }
 
-socket.addEventListener('open', () => {
+socket.on('connect', () => {
   setStatus('online', 'online');
   print('Connected to server', 'system');
 });
 
-socket.addEventListener('message', (event) => {
-  try {
-    const data = JSON.parse(event.data);
-    const sender = data.sender || 'server';
-    print(`${sender}: ${data.message}`, sender === 'system' ? 'system' : 'server');
-  } catch (e) {
-    print(`${event.data}`, 'server');
+socket.on('chat:message', (data) => {
+  if (typeof data === 'string') {
+    print(data, 'server');
+    return;
   }
+
+  const sender = data?.sender || 'server';
+  const message = data?.message || '';
+  print(`${sender}: ${message}`, sender === 'system' ? 'system' : 'server');
 });
 
-socket.addEventListener('close', () => {
+socket.on('disconnect', () => {
   setStatus('offline', 'offline');
   print('Disconnected', 'error');
 });
 
-socket.addEventListener('error', () => {
+socket.on('connect_error', () => {
   setStatus('offline', 'offline');
   print('Error occurred', 'error');
 });

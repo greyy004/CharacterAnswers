@@ -1,23 +1,25 @@
-import { WebSocketServer } from 'ws';
+import { Server } from 'socket.io';
 import { handleMessage } from '../controllers/messageController.js';
 
 function initWebSocket(server) {
-  const wss = new WebSocketServer({ server });
+  const io = new Server(server);
 
-  wss.on('connection', (ws) => {
-    console.log('WebSocket client connected');
+  io.on('connection', (socket) => {
+    console.log(`Socket.IO client connected: ${socket.id}`);
 
-    ws.on('message', async (data) => {
-      const message = data.toString();
+    socket.on('chat:message', async (message) => {
+      if (typeof message !== 'string') return;
 
-      // send websocket input to controller
       const result = await handleMessage({
         message,
         sender: 'chat-bot'
       });
 
-      // send controller response back to client
-      ws.send(JSON.stringify(result));
+      socket.emit('chat:message', result);
+    });
+
+    socket.on('disconnect', () => {
+      console.log(`Socket.IO client disconnected: ${socket.id}`);
     });
   });
 }
