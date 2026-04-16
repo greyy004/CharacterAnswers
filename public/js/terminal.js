@@ -6,6 +6,7 @@ const status = document.getElementById('status');
 const sendBtn = document.getElementById('sendBtn');
 
 function setStatus(text, state) {
+  if (!status) return;
   status.textContent = text;
   status.className = `status status--${state}`;
 }
@@ -23,38 +24,38 @@ function sendCommand() {
   if (!msg) return;
 
   if (socket.readyState !== WebSocket.OPEN) {
-    print('[ERROR] Unable to send command. Socket is not open.', 'error');
+    print('Unable to send command. Socket is not open.', 'error');
     return;
   }
 
-  print(`> ${msg}`, 'user');
+  print(`$ ${msg}`, 'user');
   socket.send(msg);
   input.value = '';
 }
 
 socket.addEventListener('open', () => {
-  setStatus('Online', 'online');
-  print('[SYSTEM] Connected to server ✔', 'system');
+  setStatus('online', 'online');
+  print('Connected to server', 'system');
 });
 
 socket.addEventListener('message', (event) => {
   try {
     const data = JSON.parse(event.data);
     const sender = data.sender || 'server';
-    print(`[${sender.toUpperCase()}] ${data.message}`, 'server');
+    print(`${sender}: ${data.message}`, sender === 'system' ? 'system' : 'server');
   } catch (e) {
-    print(`[SERVER] ${event.data}`, 'server');
+    print(`${event.data}`, 'server');
   }
 });
 
 socket.addEventListener('close', () => {
-  setStatus('Offline', 'offline');
-  print('[SYSTEM] Disconnected ❌', 'error');
+  setStatus('offline', 'offline');
+  print('Disconnected', 'error');
 });
 
 socket.addEventListener('error', () => {
-  setStatus('Offline', 'offline');
-  print('[SYSTEM] Error occurred ⚠', 'error');
+  setStatus('offline', 'offline');
+  print('Error occurred', 'error');
 });
 
 input.addEventListener('keydown', (event) => {

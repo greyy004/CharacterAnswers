@@ -14,7 +14,7 @@ app.use(express.static('public'));
 
 // routes
 app.get('/', (req, res) => {
-  res.sendFile('public/html/terminal.html', { root: '.' });
+  res.sendFile('public/html/landingpage.html', { root: '.' });
 });
 
 app.use('/code', codeRoutes);

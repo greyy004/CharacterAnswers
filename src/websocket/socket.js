@@ -13,7 +13,7 @@ function initWebSocket(server) {
       // send websocket input to controller
       const result = await handleMessage({
         message,
-        sender: 'ws-user'
+        sender: 'chat-bot'
       });
 
       // send controller response back to client

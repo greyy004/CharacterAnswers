@@ -2,6 +2,7 @@ import crypto from 'crypto';
 export const generateCode = async (req, res) => {
   try {
     const code = crypto.randomBytes(3).toString('hex');
+    console.log(code);
     return res.status(200).json({data: {
         message: "code generated successfully",
         code: code

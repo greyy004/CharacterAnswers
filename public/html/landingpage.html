@@ -1,23 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Answers</title>
+  <link rel="stylesheet" href="/css/landingpage.css">
 </head>
 <body>
-    <div class="container">
-        <div class="create">
-            <label for="code">Generate Code</label>
-    <br>
-    <button id="generate_code">Generate</button>
-    <input type="text" id="code" name="code" readonly>
+  <main class="landing-shell">
+    <section class="landing-card">
+      <div class="terminal-titlebar" aria-hidden="true">
+        <span class="dot dot--red"></span>
+        <span class="dot dot--yellow"></span>
+        <span class="dot dot--green"></span>
+      </div>
+
+      <div class="landing-body">
+        <div class="hero-copy">
+          <p class="eyebrow">Character Answers</p>
+          <h1>Start a session in a clean, minimal workspace.</h1>
+          <p class="intro">
+            Generate a fresh room code or enter one you already have to continue the conversation.
+          </p>
         </div>
-        <div>
-            <label for="join_room">Enter Code</label>
-    <br>
-    <input type="text" id="join_room" name="join_room">
+
+        <div class="actions-grid">
+          <section class="action-panel">
+            <p class="panel-label">Create Room</p>
+            <h2>Generate a new code.</h2>
+            <p class="panel-copy">Use this when you want a fresh session to share or save.</p>
+
+            <div class="inline-row">
+              <input type="text" id="code" name="code" readonly placeholder="room code will appear here">
+              <button id="generate_code" type="button">Generate</button>
+            </div>
+          </section>
+
+          <section class="action-panel">
+            <p class="panel-label">Join Room</p>
+            <h2>Use an existing code.</h2>
+            <p class="panel-copy">Paste a room code here to pick up an existing conversation.</p>
+
+            <div class="inline-row">
+              <input type="text" id="join_room" name="join_room" placeholder="enter room code">
+              <a class="ghost-link" href="/">Open terminal</a>
+            </div>
+          </section>
         </div>
-    </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/landingpage.js"></script>
 </body>
 </html>

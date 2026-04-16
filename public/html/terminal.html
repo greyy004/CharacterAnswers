@@ -8,23 +8,29 @@
 </head>
 <body>
   <div class="terminal-shell">
-    <header class="terminal-header">
-      <div>
-        <p class="terminal-label">Character Answers</p>
-        <h1>Command console</h1>
-        <p class="terminal-subtitle">Send commands and view live responses in a simple workspace.</p>
-      </div>
-      <div id="status" class="status status--pending">Connecting...</div>
-    </header>
+    <div class="terminal-titlebar" aria-hidden="true">
+      <span class="dot dot--red"></span>
+      <span class="dot dot--yellow"></span>
+      <span class="dot dot--green"></span>
+    </div>
 
     <main class="terminal-main">
+      <header class="terminal-header">
+        <div class="terminal-heading">
+          <p class="terminal-kicker">Character Answers</p>
+          <h1>Chat in a clean terminal view.</h1>
+        </div>
+      </header>
+
       <div id="output" class="output"></div>
+
       <form class="terminal-form" onsubmit="return false;">
-        <span class="prompt">></span>
-        <input id="input" type="text" placeholder="Type a command" autocomplete="off" />
-        <button id="sendBtn" type="button">Send</button>
+        <span class="prompt">$</span>
+        <input id="input" type="text" placeholder="ask a character anything" autocomplete="off" />
+        <button id="sendBtn" type="button">Run</button>
       </form>
     </main>
+
   </div>
 
   <script src="/js/terminal.js"></script>
