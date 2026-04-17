@@ -40,12 +40,24 @@ if (joinInput) {
 }
 
 if (joinForm && joinInput) {
-  joinForm.addEventListener('submit', (event) => {
+  joinForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const roomCode = joinInput.value.trim().toUpperCase();
     if (!roomCode) return;
 
-    window.location.assign(`/room/${roomCode}`);
+    try {
+      const response = await fetch(`/rooms/join-room/${roomCode}`, {
+        method: 'POST',
+        body: JSON.stringify({ roomCode }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    }catch(error)
+    {
+      console.error('Error joining room:', error);
+       alert('Failed to join room. Please check the room code and try again.');
+    }
   });
 }

@@ -1,6 +1,6 @@
 import { customAlphabet } from 'nanoid';
 
-const rooms = new Map();
+export const rooms = new Map();
 
 const generateRoomCode = customAlphabet(
   'ABCDEFGHJKLMNPQRSTUVWXYZ23456789',
@@ -21,7 +21,6 @@ export function createRoom() {
     code,
     createdAt: new Date().toISOString()
   };
-
   rooms.set(code, room);
   return room;
 }

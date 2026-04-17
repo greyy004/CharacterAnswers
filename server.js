@@ -3,7 +3,7 @@ import http from 'http';
 import roomRoutes from './src/routes/roomRoutes.js';
 import { validateRoom } from './src/controllers/roomController.js';
 import initWebSocket from './src/websocket/socket.js';
-
+import { rooms } from './src/stores/roomStore.js';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -26,6 +26,7 @@ app.use('/rooms', roomRoutes);
 
 // socket.io
 initWebSocket(server);
+
 
 const port = process.env.WS_PORT || 5000;
 server.listen(port, () => {
