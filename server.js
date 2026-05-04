@@ -1,9 +1,7 @@
 import express from 'express';
 import http from 'http';
 import roomRoutes from './src/routes/roomRoutes.js';
-import { validateRoom } from './src/controllers/roomController.js';
 import initWebSocket from './src/websocket/socket.js';
-import { rooms } from './src/stores/roomStore.js';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -18,12 +16,7 @@ app.get('/', (req, res) => {
   res.sendFile('public/html/landingpage.html', { root: '.' });
 });
 
-app.get('/room/:roomCode', validateRoom, (req, res) => {
-  res.sendFile('public/html/terminal.html', { root: '.' });
-});
-
-app.use('/rooms', roomRoutes);
-
+app.use('/room', roomRoutes);
 // socket.io
 initWebSocket(server);
 

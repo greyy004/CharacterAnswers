@@ -1,10 +1,10 @@
 import express from 'express';
-import { createRoomHandler } from '../controllers/roomController.js';
-import { checkRoomExists} from '../middlewares/roomMiddlwares.js';
+import { createRoomHandler, joinRoom } from '../controllers/roomController.js';
+import {validateRoom} from '../middlewares/roomMiddlewares.js';
 
 const router = express.Router();
 
 router.post('/create-room', createRoomHandler);
-router.post('/join-room/:roomCode', checkRoomExists);
+router.get('/join-room/:roomCode', validateRoom, joinRoom);
 
 export default router;

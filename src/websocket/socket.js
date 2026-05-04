@@ -1,6 +1,11 @@
 import { Server } from 'socket.io';
 import { handleMessage } from '../controllers/messageController.js';
-import { hasRoom } from '../stores/roomStore.js';
+import {
+  decrementUserCount,
+  hasRoom,
+  incrementUserCount,
+  isRoomFull
+} from '../stores/roomStore.js';
 import { createChatMessage } from '../utils/chatMessage.js';
 
 function initWebSocket(server) {
@@ -17,6 +22,22 @@ function initWebSocket(server) {
         return;
       }
 
+      if (isRoomFull(normalizedRoomCode)) {
+        socket.emit('room:error', { message: 'Room is full.' });
+        return;
+      }
+
+      if (socket.data.roomCode === normalizedRoomCode) {
+        socket.emit('room:joined', { roomCode: normalizedRoomCode });
+        return;
+      }
+
+      if (socket.data.roomCode) {
+        socket.leave(socket.data.roomCode);
+        decrementUserCount(socket.data.roomCode);
+      }
+
+      incrementUserCount(normalizedRoomCode);
       socket.join(normalizedRoomCode);
       socket.data.roomCode = normalizedRoomCode;
 
@@ -59,6 +80,10 @@ function initWebSocket(server) {
     });
 
     socket.on('disconnect', () => {
+      if (socket.data.roomCode) {
+        decrementUserCount(socket.data.roomCode);
+      }
+
       console.log(`Socket.IO client disconnected: ${socket.id}`);
     });
   });

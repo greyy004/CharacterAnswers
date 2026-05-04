@@ -9,19 +9,12 @@ async function createRoom() {
     createRoomBtn.textContent = 'Creating room';
 
   try {
-    const response = await fetch('/rooms/create-room', {
+    const response = await fetch('/room/create-room', {
       method: 'POST'
     });
-
     const payload = await response.json();
-    const redirectUrl = payload?.data?.redirectUrl;
-
-    if (response.ok && redirectUrl) {
-      window.location.assign(redirectUrl);
-      return;
-    }
-
-    throw new Error('Room creation failed');
+    const code = payload.data.code;
+    window.location.assign(`/room/join-room/${code}`);
   } catch (error) {
     console.error('Error creating room:', error);
     createRoomBtn.disabled = false;
@@ -46,18 +39,6 @@ if (joinForm && joinInput) {
     const roomCode = joinInput.value.trim().toUpperCase();
     if (!roomCode) return;
 
-    try {
-      const response = await fetch(`/rooms/join-room/${roomCode}`, {
-        method: 'POST',
-        body: JSON.stringify({ roomCode }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    }catch(error)
-    {
-      console.error('Error joining room:', error);
-       alert('Failed to join room. Please check the room code and try again.');
-    }
+    window.location.assign(`/room/join-room/${roomCode}`);
   });
 }

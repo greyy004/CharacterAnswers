@@ -1,5 +1,4 @@
-import { createRoom, hasRoom } from '../stores/roomStore.js';
-
+import { createRoom} from '../stores/roomStore.js';
 export async function createRoomHandler(req, res) {
   try {
     const room = createRoom();
@@ -7,8 +6,7 @@ export async function createRoomHandler(req, res) {
     return res.status(201).json({
       data: {
         message: 'Room created successfully.',
-        code: room.code,
-        redirectUrl: `/room/${room.code}`
+        code: room.code
       }
     });
   } catch (error) {
@@ -17,12 +15,7 @@ export async function createRoomHandler(req, res) {
   }
 }
 
-export async function validateRoom(req, res, next) {
-  const roomCode = String(req.params.roomCode || '').toUpperCase();
+export const joinRoom = async (req, res) => {
 
-  if (!hasRoom(roomCode)) {
-    return res.redirect('/');
-  }
-
-  return next();
-}
+  return res.sendFile('public/html/terminal.html', { root: '.' });
+};
