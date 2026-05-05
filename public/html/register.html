@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | Character Answers</title>
+  <link rel="stylesheet" href="/css/register.css">
+</head>
+<body>
+  <main class="register-shell">
+    <section class="register-card">
+      <div class="terminal-titlebar" aria-hidden="true">
+        <span class="dot dot--red"></span>
+        <span class="dot dot--yellow"></span>
+        <span class="dot dot--green"></span>
+      </div>
+
+      <div class="register-body">
+        <section class="register-copy">
+          <a class="brand-link" href="/">Character Answers</a>
+          <p class="eyebrow">New Account</p>
+          <h1>Create your account.</h1>
+          <p class="intro">Set up a profile before starting a room or joining a new session.</p>
+        </section>
+
+        <section class="register-panel" aria-label="Registration form">
+          <form id="register_form" class="register-form" autocomplete="on">
+            <div class="form-heading">
+              <p class="panel-label">Get Started</p>
+              <h2>Choose your details.</h2>
+            </div>
+
+            <label for="register_username">Username</label>
+            <input id="register_username" name="username" type="text" placeholder="choose a username" autocomplete="username" required>
+
+            <label for="register_email">Email</label>
+            <input id="register_email" name="email" type="email" placeholder="enter your email" autocomplete="email" required>
+
+            <label for="register_password">Password</label>
+            <input id="register_password" name="password" type="password" placeholder="create a password" autocomplete="new-password" minlength="6" required>
+
+            <button class="submit-button" type="submit">Register</button>
+            <p class="form-message" id="register_message" role="status" aria-live="polite"></p>
+
+            <p class="form-switch">
+              Already have an account?
+              <a href="/login">Login instead</a>
+            </p>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/register.js"></script>
+</body>
+</html>

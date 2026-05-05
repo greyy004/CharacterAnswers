@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Character Answers Auth</title>
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+  <main class="auth-shell">
+    <section class="auth-card">
+      <div class="terminal-titlebar" aria-hidden="true">
+        <span class="dot dot--red"></span>
+        <span class="dot dot--yellow"></span>
+        <span class="dot dot--green"></span>
+      </div>
+
+      <div class="auth-body">
+        <section class="auth-copy">
+          <a class="brand-link" href="/">Character Answers</a>
+          <p class="eyebrow">Account Access</p>
+          <h1>Keep your rooms and conversations close.</h1>
+          <p class="intro">
+            Sign in to return to your workspace, or create an account before starting a new session.
+          </p>
+        </section>
+
+        <section class="auth-panel" aria-label="Account forms">
+          <div class="auth-tabs" role="tablist" aria-label="Choose account form">
+            <button class="tab-button is-active" id="login_tab" type="button" role="tab" aria-controls="login_form" aria-selected="true">Login</button>
+            <button class="tab-button" id="register_tab" type="button" role="tab" aria-controls="register_form" aria-selected="false">Register</button>
+          </div>
+
+          <form id="login_form" class="auth-form is-active" autocomplete="on">
+            <div class="form-heading">
+              <p class="panel-label">Welcome Back</p>
+              <h2>Login to your account.</h2>
+            </div>
+
+            <label for="login_email">Email</label>
+            <input id="login_email" name="email" type="email" placeholder="enter your email" autocomplete="email" required>
+
+            <label for="login_password">Password</label>
+            <input id="login_password" name="password" type="password" placeholder="enter your password" autocomplete="current-password" required>
+
+            <button class="submit-button" type="submit">Login</button>
+            <p class="form-message" id="login_message" role="status" aria-live="polite"></p>
+
+            <p class="form-switch">
+              New here?
+              <button class="text-button" type="button" data-switch-form="register">Create an account</button>
+            </p>
+          </form>
+
+          <form id="register_form" class="auth-form" autocomplete="on">
+            <div class="form-heading">
+              <p class="panel-label">New Account</p>
+              <h2>Create your account.</h2>
+            </div>
+
+            <label for="register_username">Username</label>
+            <input id="register_username" name="username" type="text" placeholder="choose a username" autocomplete="username" required>
+
+            <label for="register_email">Email</label>
+            <input id="register_email" name="email" type="email" placeholder="enter your email" autocomplete="email" required>
+
+            <label for="register_password">Password</label>
+            <input id="register_password" name="password" type="password" placeholder="create a password" autocomplete="new-password" minlength="6" required>
+
+            <button class="submit-button" type="submit">Register</button>
+            <p class="form-message" id="register_message" role="status" aria-live="polite"></p>
+
+            <p class="form-switch">
+              Already have an account?
+              <button class="text-button" type="button" data-switch-form="login">Login instead</button>
+            </p>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/auth.js"></script>
+</body>
+</html>

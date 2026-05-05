@@ -11,6 +11,8 @@
   --text: #1f2328;
   --muted: #7c7a74;
   --blue: #1f6feb;
+  --button: #2a2f4a;
+  --button-hover: #20243a;
   --green: #1a7f37;
   --red: #cf222e;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
@@ -157,7 +159,7 @@ body {
 
 #sendBtn {
   border: 1px solid rgba(31, 35, 40, 0.12);
-  background: #24292f;
+  background: var(--button);
   color: #fff;
   border-radius: 10px;
   padding: 10px 14px;
@@ -168,7 +170,7 @@ body {
 }
 
 #sendBtn:hover {
-  background: #1b1f24;
+  background: var(--button-hover);
 }
 
 #sendBtn:active {
@@ -178,6 +180,32 @@ body {
 #sendBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.leave-room-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 39px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--text);
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 120ms ease, background 120ms ease, color 120ms ease;
+}
+
+.leave-room-link:hover {
+  background: #f8f6f2;
+  color: var(--button);
+}
+
+.leave-room-link:active {
+  transform: translateY(1px);
 }
 
 .output::-webkit-scrollbar {
@@ -214,6 +242,10 @@ body {
   }
 
   #sendBtn {
+    padding-inline: 12px;
+  }
+
+  .leave-room-link {
     padding-inline: 12px;
   }
 }

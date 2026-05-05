@@ -22,9 +22,11 @@
   "homepage": "https://github.com/greyy004/CharacterAnswers#readme",
   "dependencies": {
     "@google/genai": "^1.50.1",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "nanoid": "^5.1.9",
+    "pg": "^8.20.0",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {

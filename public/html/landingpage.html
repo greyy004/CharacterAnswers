@@ -7,46 +7,68 @@
   <link rel="stylesheet" href="/css/landingpage.css">
 </head>
 <body>
-  <main class="landing-shell">
-    <section class="landing-card">
-      <div class="terminal-titlebar" aria-hidden="true">
-        <span class="dot dot--red"></span>
-        <span class="dot dot--yellow"></span>
-        <span class="dot dot--green"></span>
-      </div>
+  <header class="site-header">
+    <a class="brand" href="/">Character Answers</a>
+    <nav class="account-nav" aria-label="Account">
+      <a href="/login">Login</a>
+      <a class="nav-button" href="/register">Register</a>
+    </nav>
+  </header>
 
-      <div class="landing-body">
-        <div class="hero-copy">
-          <p class="eyebrow">Character Answers</p>
-          <h1>Start a session in a clean, minimal workspace.</h1>
-          <p class="intro">
-            Generate a fresh room code or enter one you already have to continue the conversation.
-          </p>
-        </div>
-
-        <div class="actions-grid">
-          <section class="action-panel">
-            <p class="panel-label">Create Room</p>
-            <h2>Create a fresh session.</h2>
-            <p class="panel-copy">A unique room code is created automatically and you are taken straight into the terminal.</p>
-
-            <div class="cta-row">
-              <button id="create_room" type="button">Create Room</button>
-            </div>
-          </section>
-
-          <section class="action-panel">
-            <p class="panel-label">Join Room</p>
-            <h2>Use an existing code.</h2>
-            <p class="panel-copy">Paste a room code here to pick up an existing conversation.</p>
-
-            <form id="join_room_form" class="inline-row">
-              <input type="text" id="join_room" name="join_room" placeholder="enter room code">
-              <button class="ghost-link" type="submit">Open terminal</button>
-            </form>
-          </section>
+  <main>
+    <section class="hero-section">
+      <div class="hero-copy">
+        <p class="eyebrow">Character Answers</p>
+        <h1>Conversations with character, shaped into clear answers.</h1>
+        <p class="intro">
+          A focused workspace for creating character-led sessions, keeping replies organized, and returning to your ideas without clutter.
+        </p>
+        <div class="hero-actions" aria-label="Account actions">
+          <a class="primary-link" href="/register">Get started</a>
+          <a class="secondary-link" href="/login">Login</a>
         </div>
       </div>
+
+      <div class="product-preview" aria-label="Character Answers preview">
+        <div class="terminal-titlebar" aria-hidden="true">
+          <span class="dot dot--red"></span>
+          <span class="dot dot--yellow"></span>
+          <span class="dot dot--green"></span>
+        </div>
+        <div class="preview-body">
+          <div class="conversation-line is-user">
+            <span>You</span>
+            <p>What would this character say when the pressure rises?</p>
+          </div>
+          <div class="conversation-line is-character">
+            <span>Character</span>
+            <p>They answer carefully first, then reveal the part they were trying to hide.</p>
+          </div>
+          <div class="answer-strip">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-band" aria-label="Highlights">
+      <article>
+        <p class="feature-number">01</p>
+        <h2>Focused sessions</h2>
+        <p>Keep each conversation contained, readable, and easy to return to.</p>
+      </article>
+      <article>
+        <p class="feature-number">02</p>
+        <h2>Character-first replies</h2>
+        <p>Shape answers around personality, intent, and the scene in front of you.</p>
+      </article>
+      <article>
+        <p class="feature-number">03</p>
+        <h2>Clean workspace</h2>
+        <p>Use a quiet interface built for writing, testing, and refining dialogue.</p>
+      </article>
     </section>
   </main>
 

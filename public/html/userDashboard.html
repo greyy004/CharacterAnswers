@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard | Character Answers</title>
+  <link rel="stylesheet" href="/css/userDashboard.css">
+</head>
+<body>
+  <header class="dashboard-header">
+    <a class="brand" href="/">Character Answers</a>
+    <nav class="dashboard-nav" aria-label="Dashboard navigation">
+      <a href="/login">Logout</a>
+    </nav>
+  </header>
+
+  <main class="dashboard-shell">
+    <section class="dashboard-hero">
+      <div>
+        <p class="eyebrow">Dashboard</p>
+        <h1 id="welcome_title">Welcome back.</h1>
+        <p class="intro">Create a new character session or join a room that is already in progress.</p>
+      </div>
+    </section>
+
+    <section class="workspace-grid" aria-label="Room actions">
+      <article class="workspace-panel primary-panel">
+        <div>
+          <p class="panel-label">New Session</p>
+          <h2>Create a room.</h2>
+          <p class="panel-copy">Start a fresh room and move straight into the terminal workspace.</p>
+        </div>
+        <button id="create_room" class="primary-button" type="button">Create Room</button>
+      </article>
+
+      <article class="workspace-panel">
+        <div>
+          <p class="panel-label">Existing Session</p>
+          <h2>Join with a code.</h2>
+          <p class="panel-copy">Enter the room code you received to continue a shared conversation.</p>
+        </div>
+        <form id="join_room_form" class="join-form">
+          <label for="join_room">Room code</label>
+          <div class="join-row">
+            <input type="text" id="join_room" name="join_room" placeholder="ROOMCODE" maxlength="8" autocomplete="off">
+            <button class="secondary-button" type="submit">Join Room</button>
+          </div>
+        </form>
+        <p class="form-message" id="dashboard_message" role="status" aria-live="polite"></p>
+      </article>
+    </section>
+  </main>
+
+  <script src="/js/userDashboard.js"></script>
+</body>
+</html>
