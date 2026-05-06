@@ -1,56 +1,37 @@
-const registerForm = document.getElementById('register_form');
-const registerMessage = document.getElementById('register_message');
+const form = document.getElementById('register_form');
+const msg = document.getElementById('register_message');
 
-function setMessage(message, type) {
-  registerMessage.textContent = message;
-  registerMessage.classList.toggle('is-error', type === 'error');
-  registerMessage.classList.toggle('is-success', type === 'success');
-}
-
-function saveUser(user) {
-  try {
-    if (user) {
-      localStorage.setItem('characterAnswersUser', JSON.stringify(user));
-    }
-  } catch (error) {
-    console.warn('Unable to save user locally:', error);
-  }
-}
-
-registerForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-
-  const button = registerForm.querySelector('.submit-button');
-  const originalText = button.textContent;
-  const formData = new FormData(registerForm);
-  const payload = Object.fromEntries(formData.entries());
-
-  button.disabled = true;
-  button.textContent = 'Creating account';
-  setMessage('', '');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = form.querySelector('.submit-button');
+  const oldText = btn.textContent;
+  
+  btn.disabled = true;
+  btn.textContent = 'Creating account';
+  msg.textContent = '';
+  msg.className = 'message';
 
   try {
-    const response = await fetch('/auth/register', {
+    const res = await fetch('/auth/register', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        username: form.username.value,
+        email: form.email.value, 
+        password: form.password.value 
+      })
     });
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong.');
-    }
-
-    saveUser(data.user);
-    setMessage(data.message || 'Account created successfully.', 'success');
-    registerForm.reset();
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Error');
+    
+    // Cookies are automatically set by the backend response
+    
     window.location.href = '/userDashboard';
-  } catch (error) {
-    setMessage(error.message, 'error');
+  } catch (err) {
+    msg.textContent = err.message;
+    msg.classList.add('is-error');
   } finally {
-    button.disabled = false;
-    button.textContent = originalText;
+    btn.disabled = false;
+    btn.textContent = oldText;
   }
 });

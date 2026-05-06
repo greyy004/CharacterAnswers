@@ -4,6 +4,7 @@ import authRoutes from './src/routes/authRoutes.js';
 import roomRoutes from './src/routes/roomRoutes.js';
 import initWebSocket from './src/websocket/socket.js';
 import * as dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import { initdb } from './src/libs/initdb.js';
 dotenv.config();
   
@@ -13,6 +14,7 @@ const server = http.createServer(app);
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(express.static('public'));
 
 // Initialize database
@@ -23,7 +25,6 @@ try{
 {
   console.error("Error initializing database:", err);
 }
-
 
 // routes
 app.get('/', (req, res) => {
@@ -42,8 +43,13 @@ app.get('/userDashboard', (req, res) => {
   res.sendFile('public/html/userDashboard.html', { root: '.' });
 });
 
+app.get('/terminal', (req, res) => {
+  res.sendFile('public/html/terminal.html', { root: '.' });
+});
+
 app.use('/auth', authRoutes);
-app.use('/room', roomRoutes);
+app.use('/rooms', roomRoutes);
+
 // socket.io
 initWebSocket(server);
 

@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { createUser, findUserByEmail } from '../models/userModel.js';
+import { signAuthToken } from '../utils/jwt.js';
 
 const saltRounds = 10;
 
@@ -29,10 +30,12 @@ export async function registerHandler(req, res) {
 
     const passwordHash = await bcrypt.hash(password, saltRounds);
     const user = await createUser({ username, email, passwordHash });
-
+    const token = signAuthToken(user);
+    console.log(user);
+    res.cookie('token', token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+    res.cookie('username', user.username, { maxAge: 7 * 24 * 60 * 60 * 1000 });
     return res.status(201).json({
-      message: 'Account created successfully.',
-      user
+      message: 'Account created successfully.'
     });
   } catch (error) {
     console.error('Registration failed:', error);
@@ -55,17 +58,27 @@ export async function loginHandler(req, res) {
       return res.status(401).json({ message: 'Invalid email or password.' });
     }
 
+    const safeUser = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      created_at: user.created_at
+    };
+    const token = signAuthToken(safeUser);
+
+    res.cookie('token', token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+    res.cookie('username', safeUser.username, { maxAge: 7 * 24 * 60 * 60 * 1000 });
     return res.status(200).json({
-      message: 'Logged in successfully.',
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        created_at: user.created_at
-      }
+      message: 'Logged in successfully.'
     });
   } catch (error) {
     console.error('Login failed:', error);
     return res.status(500).json({ message: 'Error logging in.' });
   }
+}
+
+export async function logoutHandler(req, res) {
+  res.clearCookie('token');
+  res.clearCookie('username');
+  return res.status(200).json({ message: 'Logged out successfully.' });
 }

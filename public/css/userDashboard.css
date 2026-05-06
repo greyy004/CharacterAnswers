@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -11,8 +13,8 @@
   --border: #e4e1dc;
   --text: #1f2328;
   --muted: #7c7a74;
-  --accent: #2a2f4a;
-  --accent-hover: #20243a;
+  --accent: #000000;
+  --accent-hover: #1f2328;
   --accent-soft: #5c6f91;
   --red: #cf222e;
   --shadow: 0 28px 70px rgba(33, 24, 10, 0.1);
@@ -35,7 +37,7 @@ a {
 
 .dashboard-header {
   width: min(1120px, calc(100% - 32px));
-  min-height: 76px;
+  min-height: 56px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -59,29 +61,34 @@ a {
 }
 
 .dashboard-nav a:last-child {
-  min-height: 38px;
+  min-height: 34px;
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(31, 35, 40, 0.12);
   border-radius: 12px;
-  background: var(--surface-soft);
+  background: var(--accent);
   padding: 0 14px;
-  color: var(--text);
+  color: #ffffff;
 }
 
 .dashboard-nav a:hover {
   color: var(--text);
 }
 
+.dashboard-nav a:last-child:hover {
+  background: var(--accent-hover);
+  color: #ffffff;
+}
+
 .dashboard-shell {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 28px 0 56px;
+  padding: 10px 0 24px;
 }
 
 .dashboard-hero {
   max-width: 760px;
-  padding: 22px 0 28px;
+  padding: 10px 0 18px;
 }
 
 .eyebrow,
@@ -115,22 +122,22 @@ a {
 }
 
 .workspace-panel {
-  min-height: 260px;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 18px;
+  gap: 14px;
   border: 1px solid rgba(215, 209, 200, 0.85);
   border-radius: 22px;
   background: var(--surface);
   box-shadow: var(--shadow);
-  padding: 28px 24px;
+  padding: 22px 22px;
   text-align: center;
 }
 
 .workspace-panel h2 {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-size: clamp(1.45rem, 3vw, 2rem);
   line-height: 1.1;
 }
@@ -184,9 +191,8 @@ input::placeholder {
   color: #b5b2aa;
 }
 
-.primary-button,
-.secondary-button {
-  min-height: 48px;
+.primary-button {
+  min-height: 44px;
   flex-shrink: 0;
   border-radius: 12px;
   padding: 0 16px;
@@ -203,9 +209,16 @@ input::placeholder {
 }
 
 .secondary-button {
-  border: 1px solid var(--border);
-  background: #ffffff;
-  color: var(--text);
+  min-height: 44px;
+  flex-shrink: 0;
+  border: 1px solid rgba(31, 35, 40, 0.12);
+  border-radius: 12px;
+  background: var(--accent);
+  color: #ffffff;
+  padding: 0 16px;
+  font: 700 14px var(--font-ui);
+  cursor: pointer;
+  transition: transform 120ms ease, background 120ms ease, opacity 120ms ease;
 }
 
 .primary-button:hover {
@@ -213,7 +226,7 @@ input::placeholder {
 }
 
 .secondary-button:hover {
-  background: #f8f6f2;
+  background: var(--accent-hover);
 }
 
 .primary-button:active,
@@ -257,6 +270,7 @@ input::placeholder {
 }
 
 @media (max-width: 560px) {
+
   .dashboard-header,
   .dashboard-shell {
     width: min(100% - 24px, 1120px);
@@ -270,4 +284,5 @@ input::placeholder {
   .secondary-button {
     width: 100%;
   }
+
 }

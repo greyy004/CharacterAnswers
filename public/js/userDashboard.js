@@ -1,60 +1,54 @@
-const createRoomBtn = document.getElementById('create_room');
-const joinForm = document.getElementById('join_room_form');
-const joinInput = document.getElementById('join_room');
-const dashboardMessage = document.getElementById('dashboard_message');
-const welcomeTitle = document.getElementById('welcome_title');
+const $ = id => document.getElementById(id);
+const createBtn = $('create_room'), joinForm = $('join_room_form'), joinInput = $('join_room');
+const msg = $('dashboard_message'), welcome = $('welcome_title'), logout = $('logout_link');
 
-const savedUser = JSON.parse(localStorage.getItem('characterAnswersUser') || 'null');
+const getCookie = name => {
+  const cookie = document.cookie.split('; ').find(item => item.startsWith(`${name}=`));
+  return cookie ? decodeURIComponent(cookie.split('=')[1]) : null;
+};
+const username = getCookie('username');
 
-if (savedUser?.username) {
-  welcomeTitle.textContent = `Welcome back, ${savedUser.username}.`;
-}
+if (username) welcome.textContent = `Welcome back, ${username}.`;
 
-function setMessage(message, type) {
-  dashboardMessage.textContent = message;
-  dashboardMessage.classList.toggle('is-error', type === 'error');
-}
-
-async function createRoom() {
-  createRoomBtn.disabled = true;
-  createRoomBtn.textContent = 'Creating room';
-
-  try {
-    const response = await fetch('/room/create-room', {
-      method: 'POST'
-    });
-    const payload = await response.json();
-
-    if (!response.ok) {
-      throw new Error(payload.message || 'Unable to create a room.');
-    }
-
-    const code = payload.data.code;
-    window.location.assign(`/room/join-room/${code}`);
-  } catch (error) {
-    setMessage(error.message, 'error');
-    createRoomBtn.disabled = false;
-    createRoomBtn.textContent = 'Try again';
-  }
-}
-
-createRoomBtn.addEventListener('click', createRoom);
-
-joinInput.addEventListener('input', () => {
-  joinInput.value = joinInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
-  setMessage('', '');
+logout.addEventListener('click', async () => {
+  await fetch('/auth/logout', { method: 'POST' });
+  window.location.href = '/login';
 });
 
-joinForm.addEventListener('submit', (event) => {
-  event.preventDefault();
+const showMsg = (text, type = '') => {
+  msg.textContent = text;
+  msg.className = `message ${type ? 'is-' + type : ''}`;
+};
 
-  const roomCode = joinInput.value.trim().toUpperCase();
-
-  if (!roomCode) {
-    setMessage('Enter a room code first.', 'error');
-    joinInput.focus();
-    return;
+createBtn.addEventListener('click', async () => {
+  createBtn.disabled = true;
+  createBtn.textContent = 'Creating room';
+  try {
+    const res = await fetch('/rooms/create-room', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Error');
+    const code = data.code;
+    if (!code) throw new Error('Room code was not returned.');
+    window.location.href = `/rooms/join-room/${code}`;
+  } catch (err) {
+    showMsg(err.message, 'error');
+    createBtn.disabled = false;
+    createBtn.textContent = 'Try again';
   }
+});
 
-  window.location.assign(`/room/join-room/${roomCode}`);
+joinInput.addEventListener('input', e => {
+  e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+  showMsg('');
+});
+
+joinForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const code = joinInput.value.trim();
+  if (!code) return showMsg('Enter a room code first.', 'error');
+  window.location.assign(`/rooms/join-room/${code}`);
 });

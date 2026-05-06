@@ -51,7 +51,7 @@ a {
 .account-nav {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 30px;
   color: var(--muted);
   font-size: 14px;
   font-weight: 650;

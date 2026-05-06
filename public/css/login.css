@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -11,8 +13,8 @@
   --border: #e4e1dc;
   --text: #1f2328;
   --muted: #7c7a74;
-  --accent: #2a2f4a;
-  --accent-hover: #20243a;
+  --accent: #000000;
+  --accent-hover: #1f2328;
   --accent-soft: #5c6f91;
   --shadow: 0 28px 70px rgba(33, 24, 10, 0.1);
   --radius: 22px;
@@ -60,9 +62,17 @@ body {
   border-radius: 50%;
 }
 
-.dot--red { background: #ff5f57; }
-.dot--yellow { background: #febc2e; }
-.dot--green { background: #28c840; }
+.dot--red {
+  background: #ff5f57;
+}
+
+.dot--yellow {
+  background: #febc2e;
+}
+
+.dot--green {
+  background: #28c840;
+}
 
 .login-body {
   display: grid;

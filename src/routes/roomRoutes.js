@@ -1,10 +1,10 @@
-import express from 'express';
-import { createRoomHandler, joinRoom } from '../controllers/roomController.js';
-import {validateRoom} from '../middlewares/roomMiddlewares.js';
+import express from "express";
+import { validateUser } from "../middlewares/authMiddleware.js";
+import { createRoom, joinRoom } from "../controllers/roomController.js";
 
 const router = express.Router();
 
-router.post('/create-room', createRoomHandler);
-router.get('/join-room/:roomCode', validateRoom, joinRoom);
+router.post('/create-room', validateUser, createRoom);
+router.get('/join-room/:code', validateUser, joinRoom);
 
 export default router;
