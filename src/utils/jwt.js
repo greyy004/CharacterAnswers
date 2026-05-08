@@ -13,7 +13,7 @@ export function signAuthToken(user) {
 
   return jwt.sign(
     {
-      sub: String(user.id),
+      uid: String(user.id),
       username: user.username,
       email: user.email
     },

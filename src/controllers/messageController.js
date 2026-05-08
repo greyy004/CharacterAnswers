@@ -1,4 +1,5 @@
 import { createChatMessage } from '../utils/chatMessage.js';
+import { joinMessage } from '../utils/joinMessage.js';
 import { generateAiReply } from '../services/aiChatService.js';
 
 export async function handleMessage({ message, sender }) {

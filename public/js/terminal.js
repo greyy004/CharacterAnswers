@@ -1,7 +1,9 @@
 const $ = id => document.getElementById(id);
 const output = $('output'), input = $('input'), sendBtn = $('sendBtn');
 const roomCode = window.location.pathname.split('/').pop()?.toUpperCase() || '';
-const socket = io();
+const socket = io(
+  {withCredentials: true}
+);
 
 const print = (text, type = 'server') => {
   const div = document.createElement('div');
@@ -32,6 +34,7 @@ socket.on('connect', () => {
   print('Connected to server', 'system');
   socket.emit('room:join', { roomCode });
 });
+
 socket.on('chat:message', renderMsg);
 socket.on('room:error', p => print(p?.message || 'Room error', 'error'));
 socket.on('disconnect', () => print('Disconnected', 'error'));

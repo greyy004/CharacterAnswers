@@ -7,7 +7,7 @@ function generateRoomCode() {
 
 export const createRoom = async (req, res) => {
   try {
-    const creatorId = Number(req.user.sub);
+    const creatorId = Number(req.user.uid);
     const room = await createRoomByUser(creatorId, generateRoomCode());
 
     return res.status(201).json({
@@ -23,7 +23,8 @@ export const createRoom = async (req, res) => {
 export const joinRoom = async (req, res) => {
   const code = String(req.params.code || '').toUpperCase();
   try {
-    const room = await joinRoomByUser(code);
+    const userId = Number(req.user.uid);
+    const room = await joinRoomByUser(code, userId);
     if (!room) {
       return res.status(404).json({ message: 'Room not found.' });
     }
