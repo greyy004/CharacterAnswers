@@ -1,5 +1,6 @@
 import { Server } from 'socket.io';
-import { handleMessage } from '../controllers/messageController.js';
+import { joinRoom, findRoomByCode } from '../models/roomModel.js';
+import { handleMessageForAI, handleMessage } from '../controllers/messageController.js';
 import { createChatMessage } from '../utils/chatMessage.js';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
@@ -9,27 +10,27 @@ dotenv.config();
 function initWebSocket(server) {
   const io = new Server(server);
   //  AUTH MIDDLEWARE
- io.use((socket, next) => {
-  try {
-    const cookies = cookie.parse(socket.request.headers.cookie || '');
-    const token = cookies.token;
-    if (!token) {
-      return next(new Error('No token provided'));
+  io.use((socket, next) => {
+    try {
+      const cookies = cookie.parse(socket.request.headers.cookie || '');
+      const token = cookies.token;
+      if (!token) {
+        return next(new Error('No token provided'));
+      }
+      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+      socket.user = decoded;
+      socket.data.uid = decoded.uid;
+      console.log("Socket user:", socket.user);
+      console.log(
+        `WebSocket auth successful for user: ${socket.user.username} (${socket.user.uid})`
+      );
+      next();
+    } catch (err) {
+      console.error('WebSocket auth error:', err.message);
+      next(new Error('Invalid token'));
     }
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    socket.user = decoded;
-    socket.data.uid = decoded.uid;
-    console.log("Socket user:", socket.user);
-    console.log(
-      `WebSocket auth successful for user: ${socket.user.username} (${socket.user.uid})`
-    );
-    next();
-  } catch (err) {
-    console.error('WebSocket auth error:', err.message);
-    next(new Error('Invalid token'));
-  }
-});
-  io.on('connection', (socket) => {  
+  });
+  io.on('connection', (socket) => {
     console.log(`Socket connected: ${socket.user.username}`);
     socket.emit(
       'chat:message',
@@ -40,17 +41,25 @@ function initWebSocket(server) {
       })
     );
     // JOIN ROOM
-    socket.on('room:join', ({ roomCode } = {}) => {
+    socket.on('room:join', async ({ roomCode } = {}) => {
       const normalizedRoomCode = String(roomCode || '').toUpperCase();
       if (!normalizedRoomCode) {
         socket.emit('room:error', { message: 'Room code is required.' });
         return;
       }
-      if (socket.data.roomCode) {
+      if (socket.data.roomCode) {// Leaves the current room
         socket.leave(socket.data.roomCode);
       }
       socket.join(normalizedRoomCode);
       socket.data.roomCode = normalizedRoomCode;
+      try{
+        const joinResult = await joinRoom(normalizedRoomCode, socket.data.uid);
+      }
+      catch(err){
+        console.error('Failed to join room:', err);
+        socket.emit('room:error', { message: 'Failed to join room. Please try again.' });
+        return;
+      }
       socket.emit('room:joined', { roomCode: normalizedRoomCode });
     });
 
@@ -59,7 +68,8 @@ function initWebSocket(server) {
       if (typeof message !== 'string') return;
       const trimmedMessage = message.trim();
       if (!trimmedMessage) return;
-      const senderName = socket.user.username || socket.user.userId;
+      const senderName = socket.user.username
+      const senderUid = socket.user.uid;
       const target = socket.data.roomCode
         ? socket.to(socket.data.roomCode)
         : socket.broadcast;
@@ -70,14 +80,18 @@ function initWebSocket(server) {
           message: trimmedMessage
         })
       );
-      try{
-        const msgResult = await storeMsg(senderName, trimmedMessage);
-        console.log('Message stored successfully:', msgResult);
+      try {
+        console.log(`Handling message from ${senderName} (${senderUid}): ${trimmedMessage} from room: ${socket.data.roomCode} `);
+        const getRoomId = await findRoomByCode(socket.data.roomCode);
+        const msgReply = await handleMessage(senderUid, trimmedMessage, getRoomId.id);
+        if (msgReply) {
+          console.log("msg saved");
+        }
       }
-      catch(err){
-        console.error('Failed to store message:', err);
+      catch (err) {
+        console.error('Failed to handle message:', err);
       }
-      const aiReply = await handleMessage({
+      const aiReply = await handleMessageForAI({
         message: trimmedMessage,
         sender: 'chat-bot'
       });
@@ -87,7 +101,7 @@ function initWebSocket(server) {
         io.emit('chat:message', aiReply);
       }
     });
-    
+
     // DISCONNECT
     socket.on('disconnect', () => {
       console.log(`Socket disconnected: ${socket.user.userId}`);

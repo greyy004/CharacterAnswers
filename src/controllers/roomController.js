@@ -1,4 +1,4 @@
-import { createRoomByUser, joinRoomByUser } from "../models/roomModel.js";
+import { createRoom as createRoomDB, joinRoom as joinRoomDB } from "../models/roomModel.js";
 import crypto from 'crypto';
 
 function generateRoomCode() {
@@ -8,7 +8,7 @@ function generateRoomCode() {
 export const createRoom = async (req, res) => {
   try {
     const creatorId = Number(req.user.uid);
-    const room = await createRoomByUser(creatorId, generateRoomCode());
+    const room = await createRoomDB(creatorId, generateRoomCode());
 
     return res.status(201).json({
         message: 'Room created successfully.',
@@ -24,7 +24,7 @@ export const joinRoom = async (req, res) => {
   const code = String(req.params.code || '').toUpperCase();
   try {
     const userId = Number(req.user.uid);
-    const room = await joinRoomByUser(code, userId);
+    const room = await joinRoomDB(code, userId);
     if (!room) {
       return res.status(404).json({ message: 'Room not found.' });
     }

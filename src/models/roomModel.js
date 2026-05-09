@@ -1,8 +1,6 @@
 import pool from "../libs/db.js";
 
-/* =========================
-   CREATE TABLES
-========================= */
+// CREATE TABLES
 
 export const createRoomTable = async () => {
   // ROOMS TABLE
@@ -19,8 +17,10 @@ export const createRoomTable = async () => {
       FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
     );
   `);
+};
 
-  // ROOM USERS TABLE
+// ROOM USERS TABLE
+export const createRoomUserTable = async () => {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS room_users (
       id SERIAL PRIMARY KEY,
@@ -34,19 +34,16 @@ export const createRoomTable = async () => {
       UNIQUE(room_id, user_id)
     );
   `);
+};
 
+// CREATE ROOM INDEX
+export const createRoomIndex = async () => {
   await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_room_code ON rooms(room_code);
   `);
-};
+}
 
-export const createRoomTables = createRoomTable;
-
-
-/* =========================
-   CREATE ROOM
-========================= */
-
+// CREATE ROOM
 export const createRoom = async (creatorId, roomCode) => {
   const result = await pool.query(
     `INSERT INTO rooms (creator_id, room_code)
@@ -61,9 +58,8 @@ export const createRoom = async (creatorId, roomCode) => {
 export const createRoomByUser = createRoom;
 
 
-/* =========================
-   FIND ROOM BY CODE
-========================= */
+
+// FIND ROOM BY CODE
 
 export const findRoomByCode = async (roomCode) => {
   const result = await pool.query(
@@ -75,9 +71,7 @@ export const findRoomByCode = async (roomCode) => {
 };
 
 
-/* =========================
-   JOIN ROOM
-========================= */
+// JOIN ROOM
 
 export const joinRoom = async (roomCode, userId) => {
   const client = await pool.connect();
@@ -140,12 +134,7 @@ export const joinRoom = async (roomCode, userId) => {
   }
 };
 
-export const joinRoomByUser = joinRoom;
-
-
-/* =========================
-   GET USERS IN ROOM
-========================= */
+// GET USERS IN ROOM
 
 export const getRoomUsers = async (roomId) => {
   const result = await pool.query(
@@ -162,10 +151,7 @@ export const getRoomUsers = async (roomId) => {
 };
 
 
-/* =========================
-   LEAVE ROOM
-========================= */
-
+// LEAVE ROOM
 export const leaveRoom = async (roomId, userId) => {
   const result = await pool.query(
     `DELETE FROM room_users

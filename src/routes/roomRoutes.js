@@ -8,3 +8,4 @@ router.post('/create-room', validateUser, createRoom);
 router.get('/join-room/:code', validateUser, joinRoom);
 
 export default router;
+

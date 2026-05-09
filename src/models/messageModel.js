@@ -14,3 +14,14 @@ export const createMessageTable = async () => {
 
   await pool.query(query);
 };
+
+export const storeMessage = async (sender, message, roomId) => {
+  const result = await pool.query(
+    `
+    Insert into messages (sender_id, content, room_id) Values ($1, $2, $3)
+    returning id, content, sender_id
+    `,
+    [sender, message, roomId]
+  );
+  return result.rows[0];
+};
