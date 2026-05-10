@@ -1,39 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Character Answers Console</title>
-  <link rel="stylesheet" href="/css/terminal.css" />
-</head>
-<body>
-  <div class="terminal-shell">
-    <div class="terminal-titlebar" aria-hidden="true">
-      <span class="dot dot--red"></span>
-      <span class="dot dot--yellow"></span>
-      <span class="dot dot--green"></span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Character Answers Console</title>
+    <link rel="stylesheet" href="/css/terminal.css" />
+  </head>
+  <body>
+    <div class="terminal-shell">
+      <div class="terminal-titlebar" aria-hidden="true">
+        <span class="dot dot--red"></span>
+        <span class="dot dot--yellow"></span>
+        <span class="dot dot--green"></span>
+      </div>
+
+      <main class="terminal-main">
+        <header class="terminal-header">
+          <div class="terminal-heading">
+            <p class="terminal-kicker">Character Answers</p>
+            <h1>Chat in a clean terminal view.</h1>
+          </div>
+        </header>
+
+        <div id="output" class="output"></div>
+
+        <form class="terminal-form" onsubmit="return false;">
+          <span class="prompt">$</span>
+          <input
+            id="input"
+            type="text"
+            placeholder="ask a character anything"
+            autocomplete="off"
+          />
+          <button id="sendBtn" type="button">Run</button>
+          <a href="/userDashboard" class="leave-room-link">Leave Room</a>
+        </form>
+      </main>
     </div>
 
-    <main class="terminal-main">
-      <header class="terminal-header">
-        <div class="terminal-heading">
-          <p class="terminal-kicker">Character Answers</p>
-          <h1>Chat in a clean terminal view.</h1>
-        </div>
-      </header>
-
-      <div id="output" class="output"></div>
-
-      <form class="terminal-form" onsubmit="return false;">
-        <span class="prompt">$</span>
-        <input id="input" type="text" placeholder="ask a character anything" autocomplete="off" />
-        <button id="sendBtn" type="button">Run</button>
-        <a href="/userDashboard" class="leave-room-link">Leave Room</a>
-      </form>
-    </main>
-  </div>
-
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/js/terminal.js"></script>
-</body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/terminal.js"></script>
+  </body>
 </html>

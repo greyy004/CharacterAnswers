@@ -1,29 +1,29 @@
-import { GoogleGenAI } from '@google/genai';
-import * as dotenv from 'dotenv';
+import { GoogleGenAI } from "@google/genai";
+import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const AI_MODEL = 'gemini-2.5-flash';
+const AI_MODEL = "gemini-2.5-flash";
 
 function normalizeModelContent(content) {
-  if (typeof content === 'string') {
+  if (typeof content === "string") {
     return content.trim();
   }
 
   if (Array.isArray(content)) {
     return content
-      .map((item) => (typeof item?.text === 'string' ? item.text : ''))
+      .map((item) => (typeof item?.text === "string" ? item.text : ""))
       .filter(Boolean)
-      .join('\n')
+      .join("\n")
       .trim();
   }
 
-  return '';
+  return "";
 }
 
 function getAiClient() {
   if (!process.env.GEMINI_KEY) {
-    throw new Error('Missing GEMINI_KEY in the server environment.');
+    throw new Error("Missing GEMINI_KEY in the server environment.");
   }
 
   return new GoogleGenAI({ apiKey: process.env.GEMINI_KEY });
@@ -37,8 +37,8 @@ export async function generateAiReply(message) {
   const ai = getAiClient();
   const response = await ai.models.generateContent({
     model: AI_MODEL,
-    contents: message
+    contents: message,
   });
 
-  return normalizeModelContent(response.text) || 'No response generated.';
+  return normalizeModelContent(response.text) || "No response generated.";
 }

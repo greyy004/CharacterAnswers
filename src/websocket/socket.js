@@ -1,110 +1,204 @@
-import { Server } from 'socket.io';
-import { joinRoom, findRoomByCode } from '../models/roomModel.js';
-import { handleMessageForAI, handleMessage } from '../controllers/messageController.js';
-import { createChatMessage } from '../utils/chatMessage.js';
-import cookie from 'cookie';
-import jwt from 'jsonwebtoken';
-import * as dotenv from 'dotenv';
+import { Server } from "socket.io";
+import { joinRoom, leaveRoom, findRoomByCode } from "../models/roomModel.js";
+
+import {
+  handleMessageForAI,
+  handleMessage,
+} from "../controllers/messageController.js";
+
+import { createChatMessage } from "../utils/chatMessage.js";
+
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import * as dotenv from "dotenv";
+
 dotenv.config();
 
 function initWebSocket(server) {
-  const io = new Server(server);
-  //  AUTH MIDDLEWARE
+  const io = new Server(server, {
+    cors: {
+      origin: true,
+      credentials: true,
+    },
+  });
+
+  // AUTH MIDDLEWARE
   io.use((socket, next) => {
     try {
-      const cookies = cookie.parse(socket.request.headers.cookie || '');
+      const cookies = cookie.parse(socket.request.headers.cookie || "");
+
       const token = cookies.token;
+
       if (!token) {
-        return next(new Error('No token provided'));
+        return next(new Error("No token provided"));
       }
+
       const decoded = jwt.verify(token, process.env.SECRET_KEY);
-      socket.user = decoded;
-      socket.data.uid = decoded.uid;
-      console.log("Socket user:", socket.user);
+
+      // Store user safely
+      socket.data.user = decoded;
+
       console.log(
-        `WebSocket auth successful for user: ${socket.user.username} (${socket.user.uid})`
+        `WebSocket auth successful for user: ${decoded.username} (${decoded.uid})`,
       );
+
       next();
     } catch (err) {
-      console.error('WebSocket auth error:', err.message);
-      next(new Error('Invalid token'));
+      console.error("WebSocket auth error:", err.message);
+
+      next(new Error("Invalid token"));
     }
   });
-  io.on('connection', (socket) => {
-    console.log(`Socket connected: ${socket.user.username}`);
+
+  // CONNECTION
+  io.on("connection", (socket) => {
+    const { username: senderName, uid: senderUid } = socket.data.user;
+
+    console.log(`Socket connected: ${senderName}`);
+
     socket.emit(
-      'chat:message',
+      "chat:message",
       createChatMessage({
-        sender: 'system',
-        type: 'system',
-        message: 'Connected to session'
-      })
+        sender: "system",
+        type: "system",
+        message: "Connected to session",
+      }),
     );
+
     // JOIN ROOM
-    socket.on('room:join', async ({ roomCode } = {}) => {
-      const normalizedRoomCode = String(roomCode || '').toUpperCase();
+    socket.on("room:join", async ({ roomCode } = {}) => {
+      const normalizedRoomCode = String(roomCode || "")
+        .trim()
+        .toUpperCase();
+
       if (!normalizedRoomCode) {
-        socket.emit('room:error', { message: 'Room code is required.' });
-        return;
+        return socket.emit("room:error", {
+          message: "Room code is required.",
+        });
       }
-      if (socket.data.roomCode) {// Leaves the current room
-        socket.leave(socket.data.roomCode);
+
+      try {
+        // Leave current room if already in one
+        if (socket.data.roomCode) {
+          const previousRoomCode = socket.data.roomCode;
+
+          const previousRoom = await findRoomByCode(previousRoomCode);
+
+          if (previousRoom) {
+            await leaveRoom(previousRoom.id, senderUid);
+
+            console.log(`User ${senderName} left room ${previousRoomCode}`);
+          }
+
+          socket.leave(previousRoomCode);
+        }
+
+        // Database join FIRST
+        await joinRoom(normalizedRoomCode, senderUid);
+
+        // THEN socket room join
+        socket.join(normalizedRoomCode);
+
+        // Save room to socket
+        socket.data.roomCode = normalizedRoomCode;
+
+        console.log(`User ${senderName} joined room ${normalizedRoomCode}`);
+
+        socket.emit("room:joined", {
+          roomCode: normalizedRoomCode,
+        });
+      } catch (err) {
+        console.error("Failed to join room:", err);
+
+        socket.emit("room:error", {
+          message: "Failed to join room.",
+        });
       }
-      socket.join(normalizedRoomCode);
-      socket.data.roomCode = normalizedRoomCode;
-      try{
-        const joinResult = await joinRoom(normalizedRoomCode, socket.data.uid);
-      }
-      catch(err){
-        console.error('Failed to join room:', err);
-        socket.emit('room:error', { message: 'Failed to join room. Please try again.' });
-        return;
-      }
-      socket.emit('room:joined', { roomCode: normalizedRoomCode });
     });
 
     // CHAT MESSAGE
-    socket.on('chat:message', async (message) => {
-      if (typeof message !== 'string') return;
-      const trimmedMessage = message.trim();
-      if (!trimmedMessage) return;
-      const senderName = socket.user.username
-      const senderUid = socket.user.uid;
-      const target = socket.data.roomCode
-        ? socket.to(socket.data.roomCode)
-        : socket.broadcast;
-      target.emit(
-        'chat:message',
-        createChatMessage({
-          sender: senderName,
-          message: trimmedMessage
-        })
-      );
+    socket.on("chat:message", async (message) => {
       try {
-        console.log(`Handling message from ${senderName} (${senderUid}): ${trimmedMessage} from room: ${socket.data.roomCode} `);
-        const getRoomId = await findRoomByCode(socket.data.roomCode);
-        const msgReply = await handleMessage(senderUid, trimmedMessage, getRoomId.id);
-        if (msgReply) {
-          console.log("msg saved");
+        if (typeof message !== "string") return;
+
+        const trimmedMessage = message.trim();
+
+        if (!trimmedMessage) return;
+
+        if (!socket.data.roomCode) {
+          return socket.emit("chat:error", {
+            message: "You must join a room first.",
+          });
         }
-      }
-      catch (err) {
-        console.error('Failed to handle message:', err);
-      }
-      const aiReply = await handleMessageForAI({
-        message: trimmedMessage,
-        sender: 'chat-bot'
-      });
-      if (socket.data.roomCode) {
-        io.to(socket.data.roomCode).emit('chat:message', aiReply);
-      } else {
-        io.emit('chat:message', aiReply);
+
+        const roomCode = socket.data.roomCode;
+
+        // Send user message to OTHER users
+        socket.to(roomCode).emit(
+          "chat:message",
+          createChatMessage({
+            sender: senderName,
+            message: trimmedMessage,
+          }),
+        );
+
+        console.log(
+          `Handling message from ${senderName} (${senderUid}): ${trimmedMessage}`,
+        );
+
+        // Find room
+        const room = await findRoomByCode(roomCode);
+
+        if (!room) {
+          return socket.emit("chat:error", {
+            message: "Room not found.",
+          });
+        }
+
+        // Save message
+        await handleMessage(senderUid, trimmedMessage, room.id);
+
+        console.log("Message saved");
+
+        // AI Reply
+        const aiReply = await handleMessageForAI({
+          message: trimmedMessage,
+          sender: "chat-bot",
+        });
+
+        // Send AI reply to everyone in room
+        io.to(roomCode).emit("chat:message", aiReply);
+      } catch (err) {
+        console.error("Failed to handle message:", err);
+
+        socket.emit("chat:error", {
+          message: "Failed to process message.",
+        });
       }
     });
 
     // DISCONNECT
-    socket.on('disconnect', () => {
-      console.log(`Socket disconnected: ${socket.user.userId}`);
+    socket.on("disconnect", async (reason) => {
+      try {
+        console.log(`Socket disconnected: ${senderName}`);
+
+        console.log(`Reason: ${reason}`);
+
+        // Leave room in DB if user disconnects
+        if (socket.data.roomCode) {
+          const room = await findRoomByCode(socket.data.roomCode);
+
+          if (room) {
+            await leaveRoom(room.id, senderUid);
+
+            console.log(
+              `User ${senderName} removed from room ${socket.data.roomCode}`,
+            );
+          }
+        }
+      } catch (err) {
+        console.error("Disconnect cleanup error:", err);
+      }
     });
   });
 }

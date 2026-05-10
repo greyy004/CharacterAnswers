@@ -159,7 +159,9 @@ input {
   font-size: 15px;
   padding: 14px 15px;
   outline: none;
-  transition: border-color 120ms ease, box-shadow 120ms ease;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
 }
 
 input:focus {
@@ -181,7 +183,9 @@ input::placeholder {
   color: #ffffff;
   font: 600 14px var(--font-ui);
   cursor: pointer;
-  transition: transform 120ms ease, background 120ms ease;
+  transition:
+    transform 120ms ease,
+    background 120ms ease;
 }
 
 .submit-button:hover {

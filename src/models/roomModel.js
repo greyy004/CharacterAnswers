@@ -41,7 +41,7 @@ export const createRoomIndex = async () => {
   await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_room_code ON rooms(room_code);
   `);
-}
+};
 
 // CREATE ROOM
 export const createRoom = async (creatorId, roomCode) => {
@@ -49,7 +49,7 @@ export const createRoom = async (creatorId, roomCode) => {
     `INSERT INTO rooms (creator_id, room_code)
      VALUES ($1, $2)
      RETURNING id, room_code, creator_id`,
-    [creatorId, roomCode]
+    [creatorId, roomCode],
   );
 
   return result.rows[0];
@@ -57,19 +57,15 @@ export const createRoom = async (creatorId, roomCode) => {
 
 export const createRoomByUser = createRoom;
 
-
-
 // FIND ROOM BY CODE
 
 export const findRoomByCode = async (roomCode) => {
-  const result = await pool.query(
-    `SELECT * FROM rooms WHERE room_code = $1`,
-    [roomCode]
-  );
+  const result = await pool.query(`SELECT * FROM rooms WHERE room_code = $1`, [
+    roomCode,
+  ]);
 
   return result.rows[0];
 };
-
 
 // JOIN ROOM
 
@@ -84,7 +80,7 @@ export const joinRoom = async (roomCode, userId) => {
        FROM rooms
        WHERE room_code = $1
        FOR UPDATE`,
-      [roomCode]
+      [roomCode],
     );
 
     const room = roomResult.rows[0];
@@ -97,7 +93,7 @@ export const joinRoom = async (roomCode, userId) => {
       `SELECT id
        FROM room_users
        WHERE room_id = $1 AND user_id = $2`,
-      [room.id, userId]
+      [room.id, userId],
     );
 
     if (existing.rows.length > 0) {
@@ -113,7 +109,7 @@ export const joinRoom = async (roomCode, userId) => {
     await client.query(
       `INSERT INTO room_users (room_id, user_id)
        VALUES ($1, $2)`,
-      [room.id, userId]
+      [room.id, userId],
     );
 
     const updatedRoom = await client.query(
@@ -121,7 +117,7 @@ export const joinRoom = async (roomCode, userId) => {
        SET user_count = user_count + 1
        WHERE id = $1
        RETURNING *`,
-      [room.id]
+      [room.id],
     );
 
     await client.query("COMMIT");
@@ -144,12 +140,11 @@ export const getRoomUsers = async (roomId) => {
     JOIN users u ON u.id = ru.user_id
     WHERE ru.room_id = $1
     `,
-    [roomId]
+    [roomId],
   );
 
   return result.rows;
 };
-
 
 // LEAVE ROOM
 export const leaveRoom = async (roomId, userId) => {
@@ -157,7 +152,7 @@ export const leaveRoom = async (roomId, userId) => {
     `DELETE FROM room_users
      WHERE room_id = $1 AND user_id = $2
      RETURNING id`,
-    [roomId, userId]
+    [roomId, userId],
   );
 
   if (result.rowCount === 0) {
@@ -168,6 +163,6 @@ export const leaveRoom = async (roomId, userId) => {
     `UPDATE rooms
      SET user_count = GREATEST(user_count - 1, 0)
      WHERE id = $1`,
-    [roomId]
+    [roomId],
   );
 };

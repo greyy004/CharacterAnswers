@@ -21,7 +21,7 @@ export const storeMessage = async (sender, message, roomId) => {
     Insert into messages (sender_id, content, room_id) Values ($1, $2, $3)
     returning id, content, sender_id
     `,
-    [sender, message, roomId]
+    [sender, message, roomId],
   );
   return result.rows[0];
 };
